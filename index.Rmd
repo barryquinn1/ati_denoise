@@ -1,0 +1,754 @@
+---
+title: "FIN7030: Algorithmic trading and investment"
+subtitle: "Denoising financial data"
+author: "Barry Quinn"
+date: "20/12/2020 (updated `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    css: ["fonts.css","default", "mycssblend.css"]
+    lib_dir: libs
+    nature:
+      countdown: 120000
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: true
+      ratio: "16:9"
+      beforeInit: "https://platform.twitter.com/widgets.js"
+    seal: true
+    includes:
+      in_header: "mathjax-equation-numbers.html"
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(knitr)
+knitr::opts_chunk$set(warning=FALSE, error=FALSE, message=FALSE)
+# options(knitr.table.format = "html")
+library(tidyverse)
+library(babynames)
+library(fontawesome) 
+library(DiagrammeR)
+library(RefManageR)
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear",
+           cite.style = "alphabetic",
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+myBib <- ReadBib("refs.bib", check = FALSE)
+source("fml_fns.R", local = knitr::knit_global())
+#[source](https://bookdown.org/yihui/rmarkdown-cookbook/hook-scroll.html)
+options(width = 60)
+local({
+  hook_output <- knitr::knit_hooks$get('output')
+  knitr::knit_hooks$set(output = function(x, options) {
+    if (!is.null(options$max.height)) options$attr.output <- c(
+      options$attr.output,
+      sprintf('style="max-height: %s;"', options$max.height)
+    )
+    hook_output(x, options)
+  })
+})
+
+xaringanExtra::use_logo(
+  image_url = "img/redlogo.png"
+)
+xaringanExtra::use_xaringan_extra(c("tileview", "webcam","panelset","tachuyon"))
+```
+
+layout: true
+
+<div class="my-footer"><span>quinference.com</span></div>
+
+---
+class:inverse
+# Learning outcomes 
+- .large[Growth learning of mathematics]
+- .large[The Jewel of the Matrix: Eigenvalues and Eigenvectors]
+- .large.fancy[Mining the Jewel]
+- .large[Random Matrix Theory technique: **Marcenko-Pastur Theorem**]
+- .large[Denoising financial covariance matrices]
+- .heat[Real world application for investment algorithms]
+---
+class: inverse
+## Teaching mathematical concepts
+
+.heatinline[
+- Understanding machine learning requires familiarity with many mathematical concepts
+
+- The goal of this course is to build your intuition about these notions without getting overly technical
+
+- In particular restricting explanations to mathematical notation can be off-putting.
+
+- Instead we will visual concepts through code, conversation and real-world applications
+
+- Learning concepts via a multidimensional approach creates permanent brain connects and lasting learning.
+
+- Mostly, we will use coded practical example to illustrate the concepts]
+
+.salt[ This is a .large.fancy[**learning by doing**] approach when you can play around with the code making mistakes and build permanent learning]
+
+---
+class: middle
+# Why study denoising and detoning?
+
+- .large[Covariance matrices are everywhere in finance]
+- .large[Empirical covariances measure the linear co-movement between a set of random variables]  
+- .large[For example to estimate the linear comovement between FTSE 100 stocks you would gather 100 time series of each stocks returns]
+- .large[They are used to:]
+
+1. Run regressions
+2. Estimate risk
+3. **Optimise portfolios**
+4. Simulate scenarios via Monte Carlo
+5. Find clusters
+6. Reduce the dimensionality of a set of potential predictors
+
+---
+class:middle
+# Eigen.....
+## The story of the billion dollar eigenvector
+
+- .heatinline[Larry page and Sergy Bin built a billion dollar company based on solving a linear alegbra problem using eigenvectors]
+- In the following clip, Professor Steve Strogatz tells the story of the eigenvector, and its billion dollar application in Google.
+
+
+<iframe height="300", width="500" scrolling="no" frameborder="yes" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/302257938&color=%23d0aca4&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/edwardoneill" title="edwardoneill" target="_blank" style="color: #cccccc; text-decoration: none;">edwardoneill</a> · <a href="https://soundcloud.com/edwardoneill/steven-strogatz-on-teaching-eigenvectors-and-eigenvalues" title="Steven Strogatz on Teaching Eigenvectors and Eigenvalues" target="_blank" style="color: #cccccc; text-decoration: none;">Steven Strogatz on Teaching Eigenvectors and Eigenvalues</a></div>
+
+---
+class:middle
+## The `r  fa(name="gem")` of financial matrices: *Eigenvalues* and *eigenVectors*
+
+- As discussed, the financial world is increasing becoming defined by *Big Data*, and data-driven decision making.
+
+--
+
+- As everything becomes defined by data, they are stored in matrices
+
+--
+
+- Success in the rapidly evolving quant finance industry increasing requires creative analytics and communications of complex and complication matrix-stored data.
+
+--
+
+- At the center of the matrix, through the complexities, lie its `r fa(name = "gem")` the eigenvector and eignenvalues.
+
+--
+
+- The provide clarity and the true signal in the noisy data.
+
+--
+
+- Understand what they are is vital to be successful in modern finance. 
+
+---
+class:middle
+# Deep dive: What is a matrix?
+..pull-left[
+![](img/vectors.png)
+]
+.pull-right.large[
+- One of the simplest matrix forms is a two-dimensional vector.
+- It has two elements which each correspond to one coordinate on the two-dimensional plane.
+-  For example each of the following vectors represent a movement on the y and x planes 
+]
+
+---
+class:middle
+# Deep dive: Matrix are linear transformers
+.pull-left[
+![](img/lineartransform.png)
+]
+.pull-right[
+- In the matrix world, a linear transformation is performed by multiplying a vector by a matrix.
+- Visually, the effect is to stretch (or squish) the coordinate system along two vectors
+- For example the linear transformation matrix $\begin{bmatrix} 3 & 1 \\ 1 & 2 \end{bmatrix}$ aligns the x-axis along the vector $\begin{bmatrix} 3&1 \end{bmatrix}$ (the first column) and the y-axis along the vector $\begin{bmatrix} 1&2 \end{bmatrix}$
+
+- .heatinline[The red lines show the transformation aligned to the y-axis]
+- .saltinline[The blue lines show the transformation aligned to the x-axis]
+]
+
+---
+middle:class
+## Deep dive: What are eigenvectors and eigenvalues?
+.pull-left[
+![](img/lineartransform2.png)
+]
+
+.pull-right[
+- Consider the vector  $\begin{bmatrix} -1&-1 \end{bmatrix}$ in the below figure
+- After it is multiplied by the linear transformation matrix, it lands on the point $\begin{bmatrix} -4&-3 \end{bmatrix}$
+- .saltinline[A vector's span is the line that runs through the vector forever]
+- .saltinline[When a vector undergoes a linear transformation usually it is knocked off of its span]
+- .bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt5[
+*Eigenvectors* are vectors that do not get knocked off their span.  Instead, when eigenvectors are multiplied by a matrix, the eigenvector is simply scaled by a factor of the *eigenvalue*, landing somewhere else along the span
+]
+]
+
+---
+class:middle
+# Deep dive: Eigenvectors explained
+.pull-left[
+![](img/eigenvector_messy.png)
+ - Eigenvectors and eigenvalues are seldom whole numbers and challenging to calculate with accuracy
+]
+.pull-right[
+- The nature of eigenvectors means that scaling an *Original* eigenvector in the same or directly opposite direction will yield yet another *scaled* eigenvector
+![](img/eigenvector_scale.png)
+]
+
+---
+class:top,left
+# Deep dive: The world in 3-dimensions
+.pull-left[
+- In 3-D, the matrix describes a transformation of 3 axes, x, y and z, corresponding to the three coordinates that represent the transformation each coordinate undergoes.
+- For this reason, *eigenvectors* and *eigenvalues* are only defined for square matrices
+![](img/3x3sqmatrix.png)
+]
+.pull-right[
+- In order to find the eigenvector of a matrix, we need to find the eigenvalue
+- From the definition of the eigenvalue, we can construct an equality $Ax=\lambda x$, where $A$ represents the matrix and $\lambda$ represents the eigenvalue.
+
+.saltinline[The logic of this equality is that multiplying the eigenvector by the transformation matrix $x$ should have the same effect as scaling it by eigenvalue $\lambda$]
+]
+.footnote.mid-gray[A square matrix is a general $n$ by $n$ matrix describing the transformation of $n$ axes, each corresponding to a coordinate with $n$ elements]
+---
+class:top
+## Deep dive: Calculating the eigenvector and eigenvalue
+.pull-left[
+![](img/matrixalgebra.png)
+
+]
+.pull-right[
+- Rearrange the equality to make all terms on the right side (A is a matrix and $\lambda$ is a number so we have to an identity matrix $I$ which applies no transformation at all) to find a solution fo the eigenvalue.
+
+- As the previous plot shows, there are infinite number of *trivial solutions*, or solutions that can be achieved simply by scaling an eigenvector by any number.
+
+- In order to get rid of trivial solutions, we use the .red[determinant].
+]
+---
+class:middle
+## Deep dive: What is a determinant?
+.pull-left[
+```{r squareunit1, echo=FALSE, fig.cap="Figure 1",out.width="60%"}
+knitr::include_graphics(path="img/squareunit.png")
+```
+
+
+```{r squareunit2, echo=FALSE, fig.cap="Figure 2",out.width="60%"}
+knitr::include_graphics(path="img/4squnits.png")
+```
+]
+
+.pull-right[
+- The .heatinline[determinant] is a measure of the factor in which area is stretched by a transformation matrix.
+
+- Figure 1 shows one standard square on the coordinate space, with an area of one square unit.
+
+- When the space is stretched $\begin{bmatrix} 2&1\\0 &2\end{bmatrix}$ , the new area is four square units
+
+- .heatinline[Because the area increases by a factor of four, the determinant of the matrix is four]
+]
+---
+class:middle
+## Deep dive: What is the determinant is zero?
+![](img/det.png)
+- When the determinant is zero, the area of the square is collapsed to zero, meaning that the two vectors describing the locations of the axes are on the same line.
+
+- .heatinline[when the determinant equals zero all of space is warped into one single line (one-dimensional)]
+
+.heatinline.bg[Therefore to make the previous equality easily solvable (by discarding the space of redundant or trivial solutions) it must be true that the determinant of the matrix must be equal to zero]
+
+---
+class:middle
+## Deep dive: Get ready for the math! 
+.pull-left-1[
+```{r squareunit3, echo=FALSE, fig.cap="Figure 3"}
+knitr::include_graphics(path="img/detcalc.png")
+```
+]
+.pull-right-2[
+- In 2-D finding the eigenvalue is then a task of solving a quadratic
+
+- Figure 3 shows that the eigenvalues of the matrix $\begin{bmatrix}1&4\\3&2\end{bmatrix}$ are 5 and -2
+
+- This means that when the eigenvectors of the matrix are multiplied by the matrix, their vector length will be stretched by a factor of 5 and -2, respective to each of the eigenvectors
+]
+---
+class:middle
+# Three dimensional data eigenvector visualisation
+
+![](img/3d.gif)
+
+.footnote[ For three or more dimension matrix, a different form of the determinant formula must be used]
+
+---
+class:middle
+## Deep dive: Even more math!
+
+<img src="img/detcalc1.png" width="40%" class="center" align="left">
+
+- By plugging in the discovered eigenvalues into our originally derived equation, we find the eigenvectors
+- In the case of the calculation in figure 4, when we plug in $\lambda=5$ we get: 
+
+$$x=\begin{bmatrix}1\\1\end{bmatrix}$$
+- When we plug in when we plug in $\lambda=-2$ we get:
+
+$$x=\begin{bmatrix}-4\\3\end{bmatrix}$$
+
+- .heatinline[Given only the eigenvectors and eigenvalues of any matrix, one can easily completely reconstruct the original matrix]
+
+- .saltinline[This special property guarantees that eigenvectors will show up in almost all financial data science problems]
+]
+---
+class:middle
+## Deep dive: Machine learning and eigenvectors
+
+- Principal component analysis (PCA) is a common unsupervised machine learning technique that seeks to reduce the dimensionality of data whilst retaining key statistical measures like variance and mean.
+
+- Consider a financial data set with 100 features (100-Dimensions), we can attempt to reduce this to 2-D using PCA.
+
+-Firstly, the algorithm constructs the covariance matrix, which evaluates (in a sense) how correlated two variables are.
+
+- The full covariance matrix defines the **shape** of the data
+
+.footnote[We see come across this **shape** concept again when we using code.]
+
+---
+class:middle
+## Deep dive: Machine learning and eigenvectors
+
+- Eigenvectors of the covariance matrix are used to reorient the data among the x and y axes along lines of the great variance.
+
+- Eigenvectors facilities a snapshot of the matrix, which tells the algorithm which areas to amplify and which to mute.
+
+- Countless other applications of eigenvectors and eigenvalues, from machine learning to topology, utilise the key feature that eigenvectors provide so much useful information about a matrix.
+
+.bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt5[
+Perhaps the reason why eigenvectors and eigenvalues are so special is because of its definition : *the vectors whose direction remains unchanged whilst space around them is warped, pointing forever through the complexity at the true beauty of the matrix*
+`r tufte::quote_footer("Andre Ye 2020")`
+]
+
+
+---
+class: middle,center
+background-image: url(img/title-slide-img.png)
+background-size: cover
+# Learning through growth headspace
+
+.fat.center[Focus excercise](https://my.headspace.com/play/1257)
+
+---
+class: middle 
+# Why study denoising?
+
+.large[
+
+- Empirical covariance matrices are estimated with flawed, incomplete data which leads to estimates with an amount of noise
+
+- Such noise can render calculations using covariance matrix estimates useless
+
+- In finance, we need a procedure to reduce this noise and enhance the signal **before** using in subsequent analysis like those listed previously
+]
+
+---
+class: middle
+# Denoising using Random Matrix Theory
+- This is an elegant mathematical theorem that can help *denoise* data by distinguishing random from non-random from nonrandom by means of the empirical correlation matrix of the data.
+
+- The probability density function (pdf) of a Marcenko-Pastur distribution produces a set of eigenvalues which are randomly distributed.
+
+- We can exploit this property to extract the non-random component of some empirical correlation matrix, thus removing the random noise.
+
+.heat.fancy[Our goal is to learn how to discriminate between eigenvalues associated with noise components and eigenvalues associated with signal components]
+
+---
+class:middle
+## Application to finance
+
+- Sophisticated optimal liquidation portfolio algorithms that balance risk against impact cost involve inverting the covariance matrix of the portfolio.
+
+- Eigenvalues of the covariance matrix that are small (or even zero) correspond to portfolios of stocks that have nonzero returns but extremely low or vanishing risk.
+
+.heatinline[Such portfolios are invariably related to estimation errors resulting from insufficient data]
+
+.fatinline[One of the approaches used to eliminate the problem of small eigenvalues in the estimated covariance matrix is the so-called **random matrix** technique]
+
+---
+class:middle
+# Random correlation matrices
+
+- Suppose we have $M$ stock returns series with $T$ elements each.  The elements of the $M \times M$ empirical correlation matrix $E$ are given by 
+
+$$E_{ij}=\frac{1}{T} \sum_t^T x_{it}x_{jt}$$
+- where $x_{it}$ denotes the t^th return of the stock *i*, normalised by the standard deviation so that $Var[x_{it}]=1$
+
+- In matrix form we can rewrite the above as:
+
+$$\bf{E=HH^{'}}$$
+- where $\bf{H}$ is the $M \times T$ matrix whose rows are the time series of returns, one for each stock.
+
+---
+class:middle
+# Eigenvalue spectrum of random correlation matrix
+
+- Suppose the entries of the **H** are random with variance $\sigma^2$.
+
+- Then in the limit $T,M \rightarrow \infty$ keep the ratio $Q:=T/M \ge 1$ constant, the density of the eigenvalues of **E** is given by:
+
+$$\rho\left(\lambda  \right) = 
+    \begin{cases} 
+      \frac{T}{N}\frac{\sqrt {\left( {{\lambda _{+}} - \lambda} \right)\left( {\lambda  - {\lambda _{- }}} \right)}}{2\pi \lambda {\sigma ^2}}, & \text{if } \lambda \in [\lambda _{+},\lambda _{-}] \\
+      0, & \text{if } \lambda \notin [\lambda _{+},\lambda _{-}]
+     \end{cases}$$
+
+- where the maximum expected eigenvalue is $\lambda_{+}=\sigma^2(1+\sqrt{N/T})^2$ and the minimum expected eigenvalue is  $\lambda_{-}=\sigma^2(1-\sqrt{N/T})^2$
+
+---
+class:middle
+#### Example: Independent and identically distributed random normal returns
+
+.panelset[
+.panel[
+.panel-name[Set-up with some fake data]
+- Let X be a matrix of 100 (m=100) stock return series for 500 days (t=500) and assume that these returns are distributed as random normal observations
+
+```
+## THIS WILL CREATE A VERY LARGE OBJECT (4mb) WHICH WILL FREEZE SMALL MULTICORE COMPUTERS.  To replicate reduce t and m to 10's
+t <- 500
+m <- 100
+h <- array(rnorm(m\*t),c(m,t)) # time series in rows
+e <- h %\*% t(h)/t # form the correlation matrix
+lambda_e <- eigen(e,symmetric = T, only.values = T)
+ee <- lambda_e$values # Eigenvalyes if the correlation matrix
+```
+
+]
+.panel[
+.panel-name[Function to compute Marcenko-Pastur density in `r fa(name="r-project")`]
+.pull-left[
+```
+library(matlab)
+mp_pdf<-function(var,t,m,pts) {
+  q=t/m
+  eMin<-var\*(1-(1./q)^.5)^2 
+  eMax<-var\*(1+(1./q)^.5)^2 
+  eVal<-linspace(eMin,eMax,pts)
+  pdf<-q/(2\*pi\*var\*eVal)\*((eMax-eVal)\*(eVal-eMin))^.5
+  pdf<-array(pdf) 
+  names(pdf)<-eVal # creates a named array
+  return(pdf)  
+}
+```
+]
+.pull-right[
+- .saltinline[This function takes 4 arguments and returns the Marcenko-Pastur probability density function]
+- The arguments are var= variance, t=time, m=number of stocks in portfolio, pts= sampling points usually equal to m
+
+- .heatinline[The eigenvectors represent the principal components of the matrix, while the eigenvalues are used to find the proportion of the total variance explained by the components]
+]
+]
+.panel
+```{r, echo=FALSE}
+mp_pdf<-function(var,t,m,pts) {
+  q=t/m
+  eMin<-var*(1-(1./q)^.5)^2 
+  eMax<-var*(1+(1./q)^.5)^2 
+  eVal<-linspace(eMin,eMax,pts)
+  pdf<-q/(2*pi*var*eVal)*((eMax-eVal)*(eVal-eMin))^.5
+  pdf<-array(pdf) 
+  names(pdf)<-eVal # creates a named array
+  return(pdf)  
+}
+```
+
+[.panel-name[Test the theorem]
+```{r, echo=FALSE}
+t <- 500
+m <- 100
+h <- array(rnorm(m*t),c(m,t)) # time series in rows
+e <- h %*% t(h)/t # form the correlation matrix
+lambda_e <- eigen(e,symmetric = T, only.values = T)
+ee <- lambda_e$values # Eigenvalyes if the correlation matrix
+library(matlab)
+pdf0=mp_pdf(1,t=t,m=m,pts=m) # Marcenko-Pastur pdf
+pdf1=density(ee,width=0.1,kernel = "gaussian") # empirical pdf
+```
+
+```
+pdf0=mp_pdf(1,t=t,m=m,pts=m) # Marcenko-Pastur pdf
+pdf1=density(ee,width=0.01,kernel = "gaussian") # empirical pdf
+```
+
+]
+]
+---
+class:middle
+#### Example: Independent and identically distributed random normal returns
+.panelset[
+.panel[.panel-name[Visualising Marcenko-Pastur theorem]
+```{r visualise-mp, echo=FALSE,, out.height="75%"}
+tibble(pdf=pdf1$y, 
+       eval=pdf1$x,
+       type="Empirical PDF") %>%
+  bind_rows(
+    tibble(pdf=pdf0,
+           eval=as.numeric(names(pdf0)),
+           type="Marcenko-Pastur PDF")) ->dat # combine pdfs
+
+dat %>% ggplot(aes(x=eval,y=pdf,colour=type)) + 
+  geom_line() +
+  theme(legend.title = element_blank()) +
+labs(title="This shows how the Marcenko-Pastur distribution explains\nthe eigenvales of the random matrix X",subtitle ="M=100, T=500",x="Eigenvalues") 
+  
+```
+]
+.panel[
+.panel-name[Smaller sample]
+```{r visualisemp2, echo=FALSE , out.height="75%"}
+t <- 100
+m <- 50
+h <- array(rnorm(m*t),c(m,t)) # time series in rows
+e <- h %*% t(h)/t # form the correlation matrix
+lambda_e <- eigen(e,symmetric = T, only.values = T)
+ee <- lambda_e$values # Eigenvalyes if the correlation matrix
+pdf0=mp_pdf(1,t=t,m=m,pts=m) # Marcenko-Pastur pdf
+pdf1=density(ee,width=0.1,kernel = "gaussian") # empirical pdf
+tibble(pdf=pdf1$y, 
+       eval=pdf1$x,
+       type="Empirical PDF") %>%
+  bind_rows(
+    tibble(pdf=pdf0,
+           eval=as.numeric(names(pdf0)),
+           type="Marcenko-Pastur PDF")) ->dat # combine pdfs
+
+dat %>% ggplot(aes(x=eval,y=pdf,colour=type)) + 
+  geom_line() +
+  theme(legend.title = element_blank()) +
+labs(title="This shows how the Marcenko-Pastur distribution explains\nthe eigenvales of the random matrix X",subtitle ="M=50, T=100",x="Eigenvalues") 
+  
+```
+]
+.panel[
+.panel-name[Even smaller sample]
+.pull-left[
+```{r visualisemp3, echo=FALSE, out.height="75%"}
+t <- 50
+m <- 10
+h <- array(rnorm(m*t),c(m,t)) # time series in rows
+e <- h %*% t(h)/t # form the correlation matrix
+lambda_e <- eigen(e,symmetric = T, only.values = T)
+ee <- lambda_e$values # Eigenvalyes if the correlation matrix
+pdf0=mp_pdf(1,t=t,m=m,pts=m) # Marcenko-Pastur pdf
+pdf1=density(ee,width=0.45,kernel = "gaussian") # empirical pdf
+tibble(pdf=pdf1$y, 
+       eval=pdf1$x,
+       type="Empirical PDF") %>%
+  bind_rows(
+    tibble(pdf=pdf0,
+           eval=as.numeric(names(pdf0)),
+           type="Marcenko-Pastur PDF")) ->dat # combine pdfs
+
+dat %>% ggplot(aes(x=eval,y=pdf,colour=type)) + 
+  geom_line() +
+  theme(legend.title = element_blank()) +
+labs(title="This shows how the Marcenko-Pastur distribution explains\nthe eigenvales of the random matrix X",subtitle ="M=10, T=50",x="Eigenvalues") 
+  
+```
+]
+
+.pull-right.heat[We see that even for rather small matrices, the theoretical limiting density approximates the actual density pretty well]
+
+]
+]
+---
+class:middle
+# An experiment with real data
+To demonstrate the use of Random Matrix theory we will choose the $\texttt{dow30data}$ object which contains daily returns for ow Jones 30 index for a year.
+
+```{r rmt-load}
+load("dow30data.RData")
+library(DT)
+dow30data %>% as_tibble() %>% 
+  DT::datatable(class = "compact", rownames = FALSE, extensions = "Buttons",
+                options = list(dom = 'tBp', buttons = c("csv","excel"), 
+                               pageLength = 5)) %>%
+  DT::formatRound(1:30,digits = 3)
+```
+
+---
+class:middle
+### Estimating the theoretical Marcenko-Pastur distribution for real data
+.panel-set[
+.panel[
+.panel-name[Estimate covariance using `estRMT()`]
+.pull-left[
+- To fit a covariance matrix we use the pre-defined `estRMT` function
+```
+estRMT(R,Q=NA,cutoff = c("max","each"),
+              eigenTreat = c("average","delete"),
+              numEig = 1,parallel = TRUE)
+```
+
+This estimates the covariance matrix most of the default options
+
+```{r rmt-est}
+model <- estRMT(dow30data, parallel=FALSE)
+```
+]
+.pull-right[   
+- This function takes several options which are detailed opposite.
+- However, in the simplest case we can pass a timeseries object of asset returns. 
+- In such a case we will assume that we know the largest eigenvalue and fit the distribution to the remaining eigenvalues. 
+- Values less than the cut-off are replaced with an average value.
+]
+]
+]
+
+---
+class:inverse
+### Explanation of the `estRMT` function
+
+- `R` xts or matrix of asset returns
+- `Q` ratio of rows/size. Can be supplied externally or fit using data
+- `cutoff` takes two values max/each. If cut-off is max, Q is fitted and cutoff for eigenvalues is calculated. If cut-off is each, Q is set to row/size. Individual cut-off for each eigenvalue is calculated and used for filtration. 
+- `eigenTreat` takes 2 values, average/delete. If average then the noisy  eigenvalues are averaged and each value is replaced by average. If delete then noisy eigenvalues are ignored and the diagonal entries of the correlation matrix are replaced with 1 to make the matrix psd.
+- `numEig` number of eigenvalues that are known for variance calculation.
+Default is set to 1. If numEig = 0 then variance is assumed to be 1.
+- `parallel` boolean to use all cores of a machine.
+
+---
+class:middle
+# Plot the Marcenko-Pastur estimates
+.pull-left.large[
+- Once we have fitted a model we can also investigate the fit visually using the $\texttt{plot}$ function. 
+- The plot function takes in a fitted model and plots the fitted density overlays on a histogram. 
+- It also displays some important fit parameters.
+]
+
+.pull-right[
+```{r rmt-plot, fig.width=8, fig.height=4, fig.keep='last'}
+plot(model)
+```
+]
+
+---
+class:middle
+# A real world application of the random matrix technique
+.pull-left[
+- We will now demonstrate the use of RMT with a more elaborate *toy* example. 
+- Let us build a custom portfolio strategy using all 30 stocks from the Daily Dow Jones 30 index. We will use $\texttt{dow30data}$ object that contains daily data from 04/02/2014 to 07/10/2015. 
+
+- We will use the $\texttt{PortfolioAnalytics}$ package for building the portfolio and backtest/operationally evaluate the strategy. 
+
+- Let us first construct a custom moment function where covariance is built by denoising using Random Matrix Theory. We assume no third/fourth order effects.
+]
+.pull-right[
+```{r rmt-custommoment}
+custom.portfolio.moments <- function(R, portfolio) {
+  momentargs<-list()
+  momentargs$mu<-matrix(as.vector(apply(R,2, "mean")), ncol = 1)
+  momentargs$sigma<-estRMT(R, parallel=FALSE)$cov
+   momentargs$m3 <- matrix(0, nrow=ncol(R), ncol=ncol(R)^2)
+  momentargs$m4 <- matrix(0, nrow=ncol(R), ncol=ncol(R)^3)
+  return(momentargs)
+}
+```
+]
+---
+class:middle
+# A real world application of the random matrix technique
+
+- Using the package `PortfolioAnalytics` we will construct a portfolio with the following specification. 
+  1. No short sales are allowed. 
+  2. All cash needs to be invested at all times. 
+  3. Set the objective to maximize the quadratic utility which maximizes returns while controlling for risk. 
+
+```{r rmt-portfoliospec}
+library(PortfolioAnalytics)
+pspec.lo <- portfolio.spec(assets = colnames(dow30data))
+# Specification 1 and 2
+pspec.lo <- add.constraint(pspec.lo, type="full_investment")
+pspec.lo <- add.constraint(pspec.lo, type="long_only")
+# Specification 3
+pspec.lo <- add.objective(portfolio=pspec.lo, type="return", name="mean")
+pspec.lo <- add.objective(portfolio=pspec.lo, type="risk", name="var")
+```
+
+---
+class:middle
+# A real world application of the random matrix technique
+
+- Now lets backtest our strategy using an ordinary covariance matrix and a covariance matrix build by denoising using Random Matrix theory. 
+
+```{r rmt-run}
+opt.ordinary <- 
+  optimize.portfolio.rebalancing(dow30data, pspec.lo, 
+                                 optimize_method="quadprog",
+                                 rebalance_on="months", 
+                                 training_period=120,
+                                 trailing_periods=120)
+opt.rmt <- 
+  optimize.portfolio.rebalancing(dow30data, pspec.lo, 
+                                 optimize_method="quadprog",
+                                 momentFUN = "custom.portfolio.moments",
+                                 rebalance_on="months", 
+                                 training_period=120, 
+                                 trailing_periods=120)
+```
+
+---
+class:middle
+# A real world application of the random matrix technique
+
+- We can now extract weights and build cumulative returns using the $\texttt{PerformanceAnalytics}$ package.
+
+```{r rmt-results}
+
+ordinary.wts <- na.omit(extractWeights(opt.ordinary))
+ordinary <- Return.rebalancing(R=dow30data, weights=ordinary.wts)
+
+rmt.wts <- na.omit(extractWeights(opt.rmt))
+rmt <- Return.rebalancing(R=dow30data, weights=rmt.wts)
+
+rmt.strat.rets <- merge.xts(ordinary,rmt)
+colnames(rmt.strat.rets) <- c("ordinary", "rmt")
+
+```
+---
+class:top
+### A real world application of the RMT technique
+.panelset[
+--panel-tabs-border-bottom: #ddd;
+--panel-tab-font-family: Lucida Console;
+.panel[
+.panel-name[Ploting the experimental results]
+```{r plot results, eval=FALSE}
+charts.PerformanceSummary(rmt.strat.rets,wealth.index = T, 
+                          colorset = c("red","blue"), 
+                          main=paste(c("Comparison of Portflio ",
+                                     "Performance using two ",
+                                     "different covariance matrices"),
+                                     collapse=""), cex.legend = 1.3, 
+                          cex.axis = 1.3, legend.loc = "topleft")
+```
+]
+.panel[
+.panel-name[Results]
+```{r plot results1, echo=FALSE,fig.retina=3,fig.align="center",fig.width=8}
+charts.PerformanceSummary(rmt.strat.rets,wealth.index = T, 
+                          colorset = c("red","darkgrey"), 
+                          main="Comparison of Portfolio Performance", cex.legend = 1.1, 
+                          cex.axis = 1.1, legend.loc = "topleft")
+```
+]
+.panel[
+.panel-name[Inference]
+.large.fancy[
+- In the plot below we can see that the cumulative returns generated using our strategy with filtering using Random Matrix Theory are superior to ordinary returns. 
+- They are also better with smaller drawdowns (a measure of downside risk of an investment strategy). 
+- This suggests that there is value in filtering a large sample covariance matrix before using it for optimizing portfolios.
+]
+]
+]
+
