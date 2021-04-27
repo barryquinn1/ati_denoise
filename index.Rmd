@@ -308,11 +308,11 @@ class:middle
 
 - Consider a financial data set with 100 features (100-Dimensions), we can attempt to reduce this to 2-D using PCA.
 
--Firstly, the algorithm constructs the covariance matrix, which evaluates (in a sense) how correlated two variables are.
+- Firstly, the algorithm constructs the covariance matrix, which evaluates (in a sense) how correlated two variables are.
 
 - The full covariance matrix defines the **shape** of the data
 
-.footnote[We see come across this **shape** concept again when we using code.]
+.footnote[We shall come across this **shape** concept again when we using code.]
 
 ---
 class:middle
