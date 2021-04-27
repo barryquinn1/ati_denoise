@@ -2,7 +2,7 @@
 title: "FIN7030: Algorithmic trading and investment"
 subtitle: "Denoising financial data"
 author: "Barry Quinn"
-date: "20/12/2020 (updated `r Sys.Date()`)"
+date: "20/12/2020"
 output:
   xaringan::moon_reader:
     css: ["fonts.css","default", "mycssblend.css"]
@@ -620,10 +620,12 @@ Default is set to 1. If numEig = 0 then variance is assumed to be 1.
 ---
 class:middle
 # Plot the Marcenko-Pastur estimates
-.pull-left.large[
+.pull-left[
 - Once we have fitted a model we can also investigate the fit visually using the $\texttt{plot}$ function. 
 - The plot function takes in a fitted model and plots the fitted density overlays on a histogram. 
-- It also displays some important fit parameters.
+- It also displays some important fit parameters, including $\sigma^2$ the variance of the fitted distribution.
+- This can be used to measure the signal-to-noise ratio of the data.
+- The value `r round(model$Q,2)` indicates that only `r 100*(1-round(model$Q,2))`% of the total variance of the data can be attributed to signal
 ]
 
 .pull-right[
@@ -666,6 +668,9 @@ class:middle
 
 ```{r rmt-portfoliospec}
 library(PortfolioAnalytics)
+library(ROI)
+library(ROI.plugin.quadprog)
+foreach::registerDoSEQ() 
 pspec.lo <- portfolio.spec(assets = colnames(dow30data))
 # Specification 1 and 2
 pspec.lo <- add.constraint(pspec.lo, type="full_investment")
@@ -682,19 +687,19 @@ class:middle
 - Now lets backtest our strategy using an ordinary covariance matrix and a covariance matrix build by denoising using Random Matrix theory. 
 
 ```{r rmt-run}
-opt.ordinary <- 
-  optimize.portfolio.rebalancing(dow30data, pspec.lo, 
-                                 optimize_method="quadprog",
-                                 rebalance_on="months", 
-                                 training_period=120,
-                                 trailing_periods=120)
-opt.rmt <- 
-  optimize.portfolio.rebalancing(dow30data, pspec.lo, 
-                                 optimize_method="quadprog",
-                                 momentFUN = "custom.portfolio.moments",
-                                 rebalance_on="months", 
-                                 training_period=120, 
-                                 trailing_periods=120)
+opt.ordinary <- optimize.portfolio.rebalancing(
+  dow30data,pspec.lo, 
+  optimize_method="ROI",
+  rebalance_on='months',
+  training_period=30,
+  trailing_periods=30)
+opt.rmt <-optimize.portfolio.rebalancing(
+  dow30data, pspec.lo,
+  optimize_method="ROI",
+  momentFUN = "custom.portfolio.moments",
+  rebalance_on="months",
+  training_period=30,
+  trailing_periods=30)
 ```
 
 ---
@@ -722,15 +727,12 @@ class:top
 --panel-tabs-border-bottom: #ddd;
 --panel-tab-font-family: Lucida Console;
 .panel[
-.panel-name[Ploting the experimental results]
+.panel-name[Code]
 ```{r plot results, eval=FALSE}
-charts.PerformanceSummary(rmt.strat.rets,wealth.index = T, 
-                          colorset = c("red","blue"), 
-                          main=paste(c("Comparison of Portflio ",
-                                     "Performance using two ",
-                                     "different covariance matrices"),
-                                     collapse=""), cex.legend = 1.3, 
-                          cex.axis = 1.3, legend.loc = "topleft")
+harts.PerformanceSummary(rmt.strat.rets,wealth.index = T, 
+                          colorset = c("red","darkgrey"), 
+                          main="Comparison of Portfolio Performance", cex.legend = 1.1, 
+                          cex.axis = 1.1, legend.loc = "topleft")
 ```
 ]
 .panel[
@@ -746,6 +748,7 @@ charts.PerformanceSummary(rmt.strat.rets,wealth.index = T,
 .panel-name[Inference]
 .large.fancy[
 - In the plot below we can see that the cumulative returns generated using our strategy with filtering using Random Matrix Theory are superior to ordinary returns. 
+- This provide further evidence that extract the signal for noise data can provide better investment returns.
 - They are also better with smaller drawdowns (a measure of downside risk of an investment strategy). 
 - This suggests that there is value in filtering a large sample covariance matrix before using it for optimizing portfolios.
 ]
