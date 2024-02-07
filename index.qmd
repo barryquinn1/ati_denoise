@@ -1,6 +1,5 @@
 ---
-title: "Denoising financial data"
-subtitle: "And its effect of trading strategies"
+title: "Denoising in Finance"
 author: "Barry Quinn"
 date: "`r Sys.Date()`"
 css: mycssblend.css
@@ -11,7 +10,7 @@ title-slide-attributes:
   data-background-opacity: "0.5"
 footer: "AI and Trading"
 execute: 
-  echo: fenced
+  echo: true
 format: 
   revealjs:
     scrollable: true
@@ -34,43 +33,33 @@ myBib <- ReadBib("refs.bib", check = FALSE)
 source("fml_fns.R")
 ```
 
-## Learning outcomes
+## Learning Outcomes
 
--   Growth learning of mathematics
--   The Jewel of the Matrix: Eigenvalues and Eigenvectors
--   Random Matrix Theory technique: **Marcenko-Pastur Theorem**
--   Denoising financial covariance matrices
--   Real world application for investment algorithms
 
-## Enhancing Mathematical Understanding in Machine Learning {.small}
+### Matrix Algebra Fundamentals
+- Eigenvalues and Eigenvectors
+- Marcenko-Pastur Theorem
 
-- Machine learning's essence lies in grasping numerous mathematical foundations.
-- Our course aims to nurture an intuitive grasp of these principles, steering clear of excessive technicality.
-- We acknowledge that solely relying on mathematical notation might deter engagement.
-- To counter this, we'll adopt a dynamic learning strategy, employing code, discussions, and tangible examples to bring concepts to life.
-- Embracing a multifaceted learning methodology not only fosters deeper understanding but also ensures the retention of knowledge.
-- Predominantly, our sessions will feature hands-on coding exercises. This "learn by doing" philosophy encourages experimentation, allowing for mistakes that solidify learning.
+### Application in Finance
+- Denoising Financial Covariance Matrices
+- Impact on Investment Algorithms
 
-## Why study denoising and detoning? {.small}
+## Why Study Denoising? {.smaller}
 
-::: columns
-::: {.column}
--   Covariance matrices are everywhere in finance
--   Empirical covariances measure the linear co-movement between a set of random variables
--   For example to estimate the linear comovement between FTSE 100 stocks you would gather 100 time series of each stocks returns
+- Covariance matrices play a critical role in various financial analyses, including estimating risks, optimizing portfolios, simulating scenarios, clustering, and reducing dimensions. 
+- Accurately estimating the covariance matrix is vital for reliable financial modeling.
 
-::: 
-:::{.column}
--   They are used to:
+### Key Term: Noise
 
-1.  Run regressions
-2.  Estimate risk
-3.  **Optimise portfolios**
-4.  Simulate scenarios via Monte Carlo
-5.  Find clusters
-6.  Reduce the dimensionality of a set of potential predictors
-:::
-:::
+- Noisy data arises when empirically determined covariance matrices suffer from imperfect or limited observations, rendering subsequent calculations less useful. 
+- Therefore, preprocessing the data to remove noise before performing other tasks becomes necessary.
+
+## Benefits of Denoising {.fatinline}
+
+- More accurate risk assessment
+- Robust portfolio construction
+- Better simulation and prediction
+
 
 ## Eigen.....
 
@@ -246,55 +235,40 @@ A square matrix is a general $n$ by $n$ matrix describing the transformation of 
 ![](img/detcalc1.png)
 :::
 ::: {.column .small}
+### Retrieve the eigenvector
+
 - To find a matrix's eigenvectors, insert each eigenvalue into the equation $Ax = \lambda x$. For $\lambda=5$, the eigenvector is $\begin{bmatrix}1\\1\end{bmatrix}$; for $\lambda=-2$, it's $\begin{bmatrix}-4\\3\end{bmatrix}$. 
 
 - These eigenvectors and eigenvalues can reconstruct the original matrix, highlighting their crucial role in financial data science for simplifying and interpreting data transformations.
+
 :::
 :::
 
-## Simplifying Complexity in AI for Finance {.smaller}
-
+## Simplifying Complexity {.smaller}
 
 #### Principal Component Analysis (PCA) in AI
 - PCA, an essential technique in AI, focuses on reducing data dimensionality while preserving key statistical properties like variance and mean.
 - Ideal for financial datasets with numerous features, PCA can transform a 100-dimensional dataset into a more manageable 2D version.
 - The technique starts with the covariance matrix to evaluate variable correlations, defining the data's **shape**
+
 :::{.saltinline}
 A key concept we'll explore further in coding applications.
 :::
 
-## Simplifying Complexity in AI for Finance {.smaller}
+## Simplifying Complexity {.smaller}
 
 #### Unveiling Data's True Nature with Eigenvectors
-- Eigenvectors of the covariance matrix are crucial for reorienting data along axes of greatest variance, illuminating significant features.
-- They provide a snapshot of the dataset, guiding which features to enhance or reduce, thereby optimizing data interpretation.
+- Eigenvectors expose dominant variance axes, highlighting crucial features in the dataset.
+- Serving as dataset snapshots, eigenvectors guide feature modification, bolstering interpretability.
+- Valuable in AI and finance, these mathematical objects extend beyond machine learning, deriving comprehensible insights from convoluted datasets.
+- Exceptional property: consistent directionality persists after spatial transformations, laying bare the inner workings of matrices.
 
-::: callout-important
-- Beyond machine learning, eigenvectors and eigenvalues are celebrated for their ability to distill complex datasets into meaningful insights. 
-- Their defining quality is their directionality consistency amidst spatial transformations, revealing the underlying essence of matrices—a testament to their indispensable role in AI and finance.
-:::
-
-## Why study denoising?
-
--   Empirical covariance matrices are estimated with flawed, incomplete data which leads to estimates with an amount of noise
-
--   Such noise can render calculations using covariance matrix estimates useless
-
--   In finance, we need a procedure to reduce this noise and enhance the signal **before** using in subsequent analysis like those listed previously
-
-## Streamlining Denoising in Finance
-
-### The Importance of Denoising
-- Empirical covariance matrices often contain noise due to flawed or incomplete data.
-- This noise can undermine the utility of covariance-based calculations in finance.
-- A denoising procedure is essential for refining data prior to analysis.
-
-## Denoising with Random Matrix Theory
+## Random Matrix Theory
 - Random Matrix Theory offers a sophisticated method to separate noise from signal in empirical correlation matrices.
 - By analyzing the distribution of eigenvalues through the Marcenko-Pastur law, we can identify and eliminate random noise.
 - The goal is to distinguish noise-related eigenvalues from those signaling true data patterns.
 
-## Denoising's Role in Financial Modelling
+## Denoising's role in finance
 - In finance, accurate covariance matrices are crucial for algorithms that optimize portfolio liquidation by balancing risk and impact cost.
 - Small or zero eigenvalues often indicate estimation errors due to inadequate data, compromising portfolio risk assessments.
 - The random matrix technique helps mitigate the issue of small eigenvalues, enhancing model reliability.
@@ -307,9 +281,9 @@ A key concept we'll explore further in coding applications.
 - In the scenario where returns are random with variance $\sigma^2$, and with $T, M \rightarrow \infty$ keeping $Q:=T/M \ge 1$ constant, the eigenvalue density $\rho(\lambda)$ of $E$ follows a specific distribution.
 - This distribution has bounds defined by maximum and minimum expected eigenvalues, $\lambda_{+}$ and $\lambda_{-}$, allowing the identification of significant eigenvalues within a sea of randomness.
 
-## Streamlining Denoising in Finance with Random Matrix Theory
+## Denoising with Random Matrix Theory {.smaller}
 
-### Generating and Denoising Synthetic Data
+### Generating and Denoising Synthetic Data 
 - Generate a synthetic dataset of 100 stock returns over 500 days, assuming normal distribution.
 ```{r}
 # Generate synthetic data
@@ -320,7 +294,9 @@ e <- h %*% t(h) / t  # Correlation matrix
 lambda_e <- eigen(e, symmetric = TRUE, only.values = TRUE)  # Eigenvalues and Eigenvector
 ee<- lambda_e$values # extract the values
 ```
-**Note**: This process creates a large object; for testing on smaller systems, reduce `t` and `m`.
+
+
+- **Note**: This process creates a large object; for testing on smaller systems, reduce `t` and `m`.
 
 ## Marcenko-Pastur Law for Denoising
 - Calculate the Marcenko-Pastur probability density function (pdf) to separate noise from signal.
@@ -339,18 +315,49 @@ mp_pdf <- function(var, t, m, pts) {
 
 
 ## Visualizing Denoising Efficacy
+
+::: columns
+::: {.column .small}
 - Visualize how well RMT approximates real data distributions through empirical and theoretical density plots.
 ```{r}
+#| eval: false
+#| echo: true
 # Visualize Marcenko-Pastur vs. empirical distribution
 library(ggplot2)
 empirical_pdf <- density(ee, width = 0.1, kernel = "gaussian")
 marcenko_pastur_pdf <- mp_pdf(1, t, m, m)
 ggplot() +
-  geom_line(data = tibble(eval = empirical_pdf$x, pdf = empirical_pdf$y, type = "Empirical PDF"), aes(x = eval, y = pdf, colour = type)) +
-  geom_line(data = tibble(eval = names(marcenko_pastur_pdf), pdf = marcenko_pastur_pdf, type = "Marcenko-Pastur PDF"), aes(x = as.numeric(eval), y = pdf, colour = type)) +
+  geom_line(data = tibble(eval = empirical_pdf$x, 
+                          pdf = empirical_pdf$y, 
+                          type = "Empirical PDF"), aes(x = eval, y = pdf, colour = type)) +
+  geom_line(data = tibble(eval = names(marcenko_pastur_pdf), 
+                          pdf = marcenko_pastur_pdf, type = "Marcenko-Pastur PDF"), 
+            aes(x = as.numeric(eval), y = pdf, colour = type)) +
   labs(title = "Marcenko-Pastur Distribution vs. Empirical Data", x = "Eigenvalues", y = "Density") +
   theme(legend.title = element_blank())
 ```
+:::
+::: {.column}
+```{r}
+#| eval: true
+#| echo: false
+
+# Visualize Marcenko-Pastur vs. empirical distribution
+library(ggplot2)
+empirical_pdf <- density(ee, width = 0.1, kernel = "gaussian")
+marcenko_pastur_pdf <- mp_pdf(1, t, m, m)
+ggplot() +
+  geom_line(data = tibble(eval = empirical_pdf$x, 
+                          pdf = empirical_pdf$y, 
+                          type = "Empirical PDF"), aes(x = eval, y = pdf, colour = type)) +
+  geom_line(data = tibble(eval = names(marcenko_pastur_pdf), 
+                          pdf = marcenko_pastur_pdf, type = "Marcenko-Pastur PDF"), 
+            aes(x = as.numeric(eval), y = pdf, colour = type)) +
+  labs(title = "Marcenko-Pastur Distribution vs. Empirical Data", x = "Eigenvalues", y = "Density") +
+  theme(legend.title = element_blank())
+```
+:::
+:::
 
 ## Applying RMT to Real Financial Data
 - Apply RMT to Dow Jones 30 daily returns to optimize the covariance matrix.
@@ -360,36 +367,27 @@ load("dow30data.RData")
 model <- estRMT(dow30data, parallel = FALSE)  # estRMT function optimizes the covariance matrix
 ```
 
-::: callout-important
-`fml::estRMT()` is part of the R package for this course details of which can be found <https://github/quinfer/fml>
-:::
+- `fml::estRMT()` is part of the R package for this course details of which can be found <https://github/quinfer/fml>
 
-## Portfolio Optimization Using Denoised Data
+## Portfolio Optimization Using Denoised Data {.smaller}
 
-- - Optimising a portfolio with denoised data involves adjusting constraints and objectives with the `PortfolioAnalytics` framework to reflect the refined risk and return estimates
+-  Optimising a portfolio with denoised data involves adjusting constraints and objectives with the `PortfolioAnalytics` R framework to reflect the refined risk and return estimates
 
 ```{r}
 # Load the PortfolioAnalytics library, which provides tools for portfolio analysis
 library(PortfolioAnalytics)
 
 # Initialize a portfolio specification object with the assets derived from the column names of the dow30data dataset.
-# This step sets up the portfolio with the specified assets, preparing it for further configuration.
 pspec.lo <- portfolio.spec(assets = colnames(dow30data))
 
-# Add a full investment constraint to ensure that all capital is allocated across the portfolio's assets.
-# This constraint mandates that the sum of the asset weights equals 100%, enforcing full investment of available capital.
+# Add a full investment constraint mandating that the sum of the asset weights equals 100%, enforcing full investment of available capital.
 pspec.lo <- add.constraint(pspec.lo, type = "full_investment")
 
-# Add a long-only constraint to restrict portfolio positions to be non-negative.
 # This ensures that the portfolio can only take long positions in assets, prohibiting short selling.
 pspec.lo <- add.constraint(pspec.lo, type = "long_only")
 
-# Define the portfolio's objective to maximize the mean return.
-# This objective instructs the optimization algorithm to seek the highest possible expected return from the portfolio.
+# Set up objectives for mean-variance optimization: maximize mean return and minimize portfolio variance (risk)
 pspec.lo <- add.objective(portfolio = pspec.lo, type = "return", name = "mean")
-
-# Add another objective to minimize the portfolio's variance, targeting risk reduction.
-# This objective aims to construct a portfolio that achieves the lowest possible risk, as measured by the variance of portfolio returns.
 pspec.lo <- add.objective(portfolio = pspec.lo, type = "risk", name = "var")
 ```
 
@@ -448,26 +446,21 @@ colnames(rmt.strat.rets) <- c("ordinary", "rmt")
 ```
 
 
-## The Value of Noise Filtering in Financial Decision-Making
+## Benefits of denoising
 
-::: columns
-::: {.column}
-- The success of RMT in filtering out noise underscores the importance of sophisticated data analysis techniques in modern finance. 
-- By enabling a clearer understanding of underlying market dynamics, RMT facilitates more informed and strategic decision-making processes.
-:::
-::: {.column}
 ```{r}
-
-charts.PerformanceSummary(rmt.strat.rets, wealth.index = TRUE, 
+charts.PerformanceSummary(rmt.strat.rets, 
                           colorset = c("red", "darkgrey"), 
                           main = "Advantages of Denoising in Portfolio Management", 
                           legend.loc = "topleft")
+chart.RiskReturnScatter(rmt.strat.rets)
 ```
-:::
-:::
 
-## Enhancing Portfolio Performance with Denoising
 
+## Portfolio Performance with Denoising {.smaller}
+
+- The success of RMT in filtering out noise underscores the importance of sophisticated data analysis techniques in modern finance. 
+- By enabling a clearer understanding of underlying market dynamics, RMT facilitates more informed and strategic decision-making processes.
 - Implementing denoising techniques, particularly Random Matrix Theory (RMT), markedly improves portfolio performance. 
 - This method effectively separates genuine market signals from noise, leading to more accurate risk assessments and investment strategies.
 

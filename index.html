@@ -11,8 +11,8 @@
   <meta name="generator" content="quarto-1.3.450">
 
   <meta name="author" content="Barry Quinn">
-  <meta name="dcterms.date" content="2024-02-06">
-  <title>Denoising financial data</title>
+  <meta name="dcterms.date" content="2024-02-07">
+  <title>Denoising in Finance</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -393,8 +393,7 @@
     <div class="slides">
 
 <section id="title-slide" data-background-image="img/title-slide-img.png" data-background-opacity="0.5" data-background-size="contain" class="quarto-title-block center">
-  <h1 class="title">Denoising financial data</h1>
-  <p class="subtitle">And its effect of trading strategies</p>
+  <h1 class="title">Denoising in Finance</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -404,52 +403,40 @@ Barry Quinn
 </div>
 </div>
 
-  <p class="date">2024-02-06</p>
+  <p class="date">2024-02-07</p>
 </section>
 <section id="learning-outcomes" class="slide level2">
-<h2>Learning outcomes</h2>
+<h2>Learning Outcomes</h2>
+<h3 id="matrix-algebra-fundamentals">Matrix Algebra Fundamentals</h3>
 <ul>
-<li>Growth learning of mathematics</li>
-<li>The Jewel of the Matrix: Eigenvalues and Eigenvectors</li>
-<li>Random Matrix Theory technique: <strong>Marcenko-Pastur Theorem</strong></li>
-<li>Denoising financial covariance matrices</li>
-<li>Real world application for investment algorithms</li>
+<li>Eigenvalues and Eigenvectors</li>
+<li>Marcenko-Pastur Theorem</li>
+</ul>
+<h3 id="application-in-finance">Application in Finance</h3>
+<ul>
+<li>Denoising Financial Covariance Matrices</li>
+<li>Impact on Investment Algorithms</li>
 </ul>
 </section>
-<section id="enhancing-mathematical-understanding-in-machine-learning" class="slide level2 small">
-<h2>Enhancing Mathematical Understanding in Machine Learning</h2>
+<section id="why-study-denoising" class="slide level2 smaller">
+<h2>Why Study Denoising?</h2>
 <ul>
-<li>Machine learning’s essence lies in grasping numerous mathematical foundations.</li>
-<li>Our course aims to nurture an intuitive grasp of these principles, steering clear of excessive technicality.</li>
-<li>We acknowledge that solely relying on mathematical notation might deter engagement.</li>
-<li>To counter this, we’ll adopt a dynamic learning strategy, employing code, discussions, and tangible examples to bring concepts to life.</li>
-<li>Embracing a multifaceted learning methodology not only fosters deeper understanding but also ensures the retention of knowledge.</li>
-<li>Predominantly, our sessions will feature hands-on coding exercises. This “learn by doing” philosophy encourages experimentation, allowing for mistakes that solidify learning.</li>
+<li>Covariance matrices play a critical role in various financial analyses, including estimating risks, optimizing portfolios, simulating scenarios, clustering, and reducing dimensions.</li>
+<li>Accurately estimating the covariance matrix is vital for reliable financial modeling.</li>
+</ul>
+<h3 id="key-term-noise">Key Term: Noise</h3>
+<ul>
+<li>Noisy data arises when empirically determined covariance matrices suffer from imperfect or limited observations, rendering subsequent calculations less useful.</li>
+<li>Therefore, preprocessing the data to remove noise before performing other tasks becomes necessary.</li>
 </ul>
 </section>
-<section id="why-study-denoising-and-detoning" class="slide level2 small">
-<h2>Why study denoising and detoning?</h2>
-<div class="columns">
-<div class="column">
+<section id="benefits-of-denoising" class="slide level2 fatinline">
+<h2>Benefits of Denoising</h2>
 <ul>
-<li>Covariance matrices are everywhere in finance</li>
-<li>Empirical covariances measure the linear co-movement between a set of random variables</li>
-<li>For example to estimate the linear comovement between FTSE 100 stocks you would gather 100 time series of each stocks returns</li>
+<li>More accurate risk assessment</li>
+<li>Robust portfolio construction</li>
+<li>Better simulation and prediction</li>
 </ul>
-</div><div class="column">
-<ul>
-<li>They are used to:</li>
-</ul>
-<ol type="1">
-<li>Run regressions</li>
-<li>Estimate risk</li>
-<li><strong>Optimise portfolios</strong></li>
-<li>Simulate scenarios via Monte Carlo</li>
-<li>Find clusters</li>
-<li>Reduce the dimensionality of a set of potential predictors</li>
-</ol>
-</div>
-</div>
 </section>
 <section id="eigen.." class="slide level2">
 <h2>Eigen…..</h2>
@@ -623,6 +610,7 @@ Barry Quinn
 <div class="column">
 <p><img data-src="img/detcalc1.png"></p>
 </div><div class="column small">
+<h3 id="retrieve-the-eigenvector">Retrieve the eigenvector</h3>
 <ul>
 <li><p>To find a matrix’s eigenvectors, insert each eigenvalue into the equation <span class="math inline">\(Ax = \lambda x\)</span>. For <span class="math inline">\(\lambda=5\)</span>, the eigenvector is <span class="math inline">\(\begin{bmatrix}1\\1\end{bmatrix}\)</span>; for <span class="math inline">\(\lambda=-2\)</span>, it’s <span class="math inline">\(\begin{bmatrix}-4\\3\end{bmatrix}\)</span>.</p></li>
 <li><p>These eigenvectors and eigenvalues can reconstruct the original matrix, highlighting their crucial role in financial data science for simplifying and interpreting data transformations.</p></li>
@@ -630,66 +618,38 @@ Barry Quinn
 </div>
 </div>
 </section>
-<section id="simplifying-complexity-in-ai-for-finance" class="slide level2 smaller">
-<h2>Simplifying Complexity in AI for Finance</h2>
+<section id="simplifying-complexity" class="slide level2 smaller">
+<h2>Simplifying Complexity</h2>
 <h4 id="principal-component-analysis-pca-in-ai">Principal Component Analysis (PCA) in AI</h4>
 <ul>
 <li>PCA, an essential technique in AI, focuses on reducing data dimensionality while preserving key statistical properties like variance and mean.</li>
 <li>Ideal for financial datasets with numerous features, PCA can transform a 100-dimensional dataset into a more manageable 2D version.</li>
-<li>The technique starts with the covariance matrix to evaluate variable correlations, defining the data’s <strong>shape</strong> :::{.saltinline} A key concept we’ll explore further in coding applications. :::</li>
+<li>The technique starts with the covariance matrix to evaluate variable correlations, defining the data’s <strong>shape</strong></li>
 </ul>
+<div class="saltinline">
+<p>A key concept we’ll explore further in coding applications.</p>
+</div>
 </section>
-<section id="simplifying-complexity-in-ai-for-finance-1" class="slide level2 smaller">
-<h2>Simplifying Complexity in AI for Finance</h2>
+<section id="simplifying-complexity-1" class="slide level2 smaller">
+<h2>Simplifying Complexity</h2>
 <h4 id="unveiling-datas-true-nature-with-eigenvectors">Unveiling Data’s True Nature with Eigenvectors</h4>
 <ul>
-<li>Eigenvectors of the covariance matrix are crucial for reorienting data along axes of greatest variance, illuminating significant features.</li>
-<li>They provide a snapshot of the dataset, guiding which features to enhance or reduce, thereby optimizing data interpretation.</li>
-</ul>
-<div class="callout callout-important callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Important</strong></p>
-</div>
-<div class="callout-content">
-<ul>
-<li>Beyond machine learning, eigenvectors and eigenvalues are celebrated for their ability to distill complex datasets into meaningful insights.</li>
-<li>Their defining quality is their directionality consistency amidst spatial transformations, revealing the underlying essence of matrices—a testament to their indispensable role in AI and finance.</li>
-</ul>
-</div>
-</div>
-</div>
-</section>
-<section id="why-study-denoising" class="slide level2">
-<h2>Why study denoising?</h2>
-<ul>
-<li><p>Empirical covariance matrices are estimated with flawed, incomplete data which leads to estimates with an amount of noise</p></li>
-<li><p>Such noise can render calculations using covariance matrix estimates useless</p></li>
-<li><p>In finance, we need a procedure to reduce this noise and enhance the signal <strong>before</strong> using in subsequent analysis like those listed previously</p></li>
+<li>Eigenvectors expose dominant variance axes, highlighting crucial features in the dataset.</li>
+<li>Serving as dataset snapshots, eigenvectors guide feature modification, bolstering interpretability.</li>
+<li>Valuable in AI and finance, these mathematical objects extend beyond machine learning, deriving comprehensible insights from convoluted datasets.</li>
+<li>Exceptional property: consistent directionality persists after spatial transformations, laying bare the inner workings of matrices.</li>
 </ul>
 </section>
-<section id="streamlining-denoising-in-finance" class="slide level2">
-<h2>Streamlining Denoising in Finance</h2>
-<h3 id="the-importance-of-denoising">The Importance of Denoising</h3>
-<ul>
-<li>Empirical covariance matrices often contain noise due to flawed or incomplete data.</li>
-<li>This noise can undermine the utility of covariance-based calculations in finance.</li>
-<li>A denoising procedure is essential for refining data prior to analysis.</li>
-</ul>
-</section>
-<section id="denoising-with-random-matrix-theory" class="slide level2">
-<h2>Denoising with Random Matrix Theory</h2>
+<section id="random-matrix-theory" class="slide level2">
+<h2>Random Matrix Theory</h2>
 <ul>
 <li>Random Matrix Theory offers a sophisticated method to separate noise from signal in empirical correlation matrices.</li>
 <li>By analyzing the distribution of eigenvalues through the Marcenko-Pastur law, we can identify and eliminate random noise.</li>
 <li>The goal is to distinguish noise-related eigenvalues from those signaling true data patterns.</li>
 </ul>
 </section>
-<section id="denoisings-role-in-financial-modelling" class="slide level2">
-<h2>Denoising’s Role in Financial Modelling</h2>
+<section id="denoisings-role-in-finance" class="slide level2">
+<h2>Denoising’s role in finance</h2>
 <ul>
 <li>In finance, accurate covariance matrices are crucial for algorithms that optimize portfolio liquidation by balancing risk and impact cost.</li>
 <li>Small or zero eigenvalues often indicate estimation errors due to inadequate data, compromising portfolio risk assessments.</li>
@@ -710,24 +670,24 @@ Barry Quinn
 <li>This distribution has bounds defined by maximum and minimum expected eigenvalues, <span class="math inline">\(\lambda_{+}\)</span> and <span class="math inline">\(\lambda_{-}\)</span>, allowing the identification of significant eigenvalues within a sea of randomness.</li>
 </ul>
 </section>
-<section id="streamlining-denoising-in-finance-with-random-matrix-theory" class="slide level2">
-<h2>Streamlining Denoising in Finance with Random Matrix Theory</h2>
+<section id="denoising-with-random-matrix-theory" class="slide level2 smaller">
+<h2>Denoising with Random Matrix Theory</h2>
 <h3 id="generating-and-denoising-synthetic-data">Generating and Denoising Synthetic Data</h3>
 <ul>
 <li>Generate a synthetic dataset of 100 stock returns over 500 days, assuming normal distribution.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="in">```{r}</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># Generate synthetic data</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a>t <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># Number of days</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a>m <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># Number of stocks</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a>h <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="fu">rnorm</span>(m<span class="sc">*</span>t), <span class="fu">c</span>(m, t))  <span class="co"># Random normal returns</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a>e <span class="ot">&lt;-</span> h <span class="sc">%*%</span> <span class="fu">t</span>(h) <span class="sc">/</span> t  <span class="co"># Correlation matrix</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a>lambda_e <span class="ot">&lt;-</span> <span class="fu">eigen</span>(e, <span class="at">symmetric =</span> <span class="cn">TRUE</span>, <span class="at">only.values =</span> <span class="cn">TRUE</span>)  <span class="co"># Eigenvalues and Eigenvector</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a>ee<span class="ot">&lt;-</span> lambda_e<span class="sc">$</span>values <span class="co"># extract the values</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Generate synthetic data</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>t <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># Number of days</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a>m <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># Number of stocks</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>h <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="fu">rnorm</span>(m<span class="sc">*</span>t), <span class="fu">c</span>(m, t))  <span class="co"># Random normal returns</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>e <span class="ot">&lt;-</span> h <span class="sc">%*%</span> <span class="fu">t</span>(h) <span class="sc">/</span> t  <span class="co"># Correlation matrix</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>lambda_e <span class="ot">&lt;-</span> <span class="fu">eigen</span>(e, <span class="at">symmetric =</span> <span class="cn">TRUE</span>, <span class="at">only.values =</span> <span class="cn">TRUE</span>)  <span class="co"># Eigenvalues and Eigenvector</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a>ee<span class="ot">&lt;-</span> lambda_e<span class="sc">$</span>values <span class="co"># extract the values</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong>Note</strong>: This process creates a large object; for testing on smaller systems, reduce <code>t</code> and <code>m</code>.</p>
+<ul>
+<li><strong>Note</strong>: This process creates a large object; for testing on smaller systems, reduce <code>t</code> and <code>m</code>.</li>
+</ul>
 </section>
 <section id="marcenko-pastur-law-for-denoising" class="slide level2">
 <h2>Marcenko-Pastur Law for Denoising</h2>
@@ -735,98 +695,84 @@ Barry Quinn
 <li>Calculate the Marcenko-Pastur probability density function (pdf) to separate noise from signal.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="co"># Marcenko-Pastur pdf calculation</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="fu">library</span>(matlab)</span>
-<span id="cb2-4"><a href="#cb2-4"></a>mp_pdf <span class="ot">&lt;-</span> <span class="cf">function</span>(var, t, m, pts) {</span>
-<span id="cb2-5"><a href="#cb2-5"></a>  q <span class="ot">&lt;-</span> t <span class="sc">/</span> m</span>
-<span id="cb2-6"><a href="#cb2-6"></a>  eMin <span class="ot">&lt;-</span> var <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span> <span class="sc">/</span> q)<span class="sc">^</span><span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a>  eMax <span class="ot">&lt;-</span> var <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">/</span> q)<span class="sc">^</span><span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a>  eVal <span class="ot">&lt;-</span> <span class="fu">linspace</span>(eMin, eMax, pts)</span>
-<span id="cb2-9"><a href="#cb2-9"></a>  pdf <span class="ot">&lt;-</span> q <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> var <span class="sc">*</span> eVal) <span class="sc">*</span> ((eMax <span class="sc">-</span> eVal) <span class="sc">*</span> (eVal <span class="sc">-</span> eMin))<span class="sc">^</span><span class="fl">0.5</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a>  <span class="fu">return</span>(<span class="fu">setNames</span>(<span class="fu">array</span>(pdf), eVal))</span>
-<span id="cb2-11"><a href="#cb2-11"></a>}</span>
-<span id="cb2-12"><a href="#cb2-12"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Marcenko-Pastur pdf calculation</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">library</span>(matlab)</span>
+<span id="cb2-3"><a href="#cb2-3"></a>mp_pdf <span class="ot">&lt;-</span> <span class="cf">function</span>(var, t, m, pts) {</span>
+<span id="cb2-4"><a href="#cb2-4"></a>  q <span class="ot">&lt;-</span> t <span class="sc">/</span> m</span>
+<span id="cb2-5"><a href="#cb2-5"></a>  eMin <span class="ot">&lt;-</span> var <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span> <span class="sc">/</span> q)<span class="sc">^</span><span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>  eMax <span class="ot">&lt;-</span> var <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">/</span> q)<span class="sc">^</span><span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>  eVal <span class="ot">&lt;-</span> <span class="fu">linspace</span>(eMin, eMax, pts)</span>
+<span id="cb2-8"><a href="#cb2-8"></a>  pdf <span class="ot">&lt;-</span> q <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> var <span class="sc">*</span> eVal) <span class="sc">*</span> ((eMax <span class="sc">-</span> eVal) <span class="sc">*</span> (eVal <span class="sc">-</span> eMin))<span class="sc">^</span><span class="fl">0.5</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>  <span class="fu">return</span>(<span class="fu">setNames</span>(<span class="fu">array</span>(pdf), eVal))</span>
+<span id="cb2-10"><a href="#cb2-10"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="visualizing-denoising-efficacy" class="slide level2">
 <h2>Visualizing Denoising Efficacy</h2>
+<div class="columns">
+<div class="column small">
 <ul>
 <li>Visualize how well RMT approximates real data distributions through empirical and theoretical density plots.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="co"># Visualize Marcenko-Pastur vs. empirical distribution</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb3-4"><a href="#cb3-4"></a>empirical_pdf <span class="ot">&lt;-</span> <span class="fu">density</span>(ee, <span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">kernel =</span> <span class="st">"gaussian"</span>)</span>
-<span id="cb3-5"><a href="#cb3-5"></a>marcenko_pastur_pdf <span class="ot">&lt;-</span> <span class="fu">mp_pdf</span>(<span class="dv">1</span>, t, m, m)</span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">eval =</span> empirical_pdf<span class="sc">$</span>x, <span class="at">pdf =</span> empirical_pdf<span class="sc">$</span>y, <span class="at">type =</span> <span class="st">"Empirical PDF"</span>), <span class="fu">aes</span>(<span class="at">x =</span> eval, <span class="at">y =</span> pdf, <span class="at">colour =</span> type)) <span class="sc">+</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">eval =</span> <span class="fu">names</span>(marcenko_pastur_pdf), <span class="at">pdf =</span> marcenko_pastur_pdf, <span class="at">type =</span> <span class="st">"Marcenko-Pastur PDF"</span>), <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.numeric</span>(eval), <span class="at">y =</span> pdf, <span class="at">colour =</span> type)) <span class="sc">+</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Marcenko-Pastur Distribution vs. Empirical Data"</span>, <span class="at">x =</span> <span class="st">"Eigenvalues"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a>  <span class="fu">theme</span>(<span class="at">legend.title =</span> <span class="fu">element_blank</span>())</span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Visualize Marcenko-Pastur vs. empirical distribution</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-3"><a href="#cb3-3"></a>empirical_pdf <span class="ot">&lt;-</span> <span class="fu">density</span>(ee, <span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">kernel =</span> <span class="st">"gaussian"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4"></a>marcenko_pastur_pdf <span class="ot">&lt;-</span> <span class="fu">mp_pdf</span>(<span class="dv">1</span>, t, m, m)</span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">eval =</span> empirical_pdf<span class="sc">$</span>x, </span>
+<span id="cb3-7"><a href="#cb3-7"></a>                          <span class="at">pdf =</span> empirical_pdf<span class="sc">$</span>y, </span>
+<span id="cb3-8"><a href="#cb3-8"></a>                          <span class="at">type =</span> <span class="st">"Empirical PDF"</span>), <span class="fu">aes</span>(<span class="at">x =</span> eval, <span class="at">y =</span> pdf, <span class="at">colour =</span> type)) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">eval =</span> <span class="fu">names</span>(marcenko_pastur_pdf), </span>
+<span id="cb3-10"><a href="#cb3-10"></a>                          <span class="at">pdf =</span> marcenko_pastur_pdf, <span class="at">type =</span> <span class="st">"Marcenko-Pastur PDF"</span>), </span>
+<span id="cb3-11"><a href="#cb3-11"></a>            <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.numeric</span>(eval), <span class="at">y =</span> pdf, <span class="at">colour =</span> type)) <span class="sc">+</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Marcenko-Pastur Distribution vs. Empirical Data"</span>, <span class="at">x =</span> <span class="st">"Eigenvalues"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a>  <span class="fu">theme</span>(<span class="at">legend.title =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-4-1.png" width="960"></p>
+</div>
+</div>
+</div>
+</div>
+</section>
 <section id="applying-rmt-to-real-financial-data" class="slide level2">
 <h2>Applying RMT to Real Financial Data</h2>
 <ul>
 <li>Apply RMT to Dow Jones 30 daily returns to optimize the covariance matrix.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="co"># Load data and apply RMT</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="fu">load</span>(<span class="st">"dow30data.RData"</span>)</span>
-<span id="cb4-4"><a href="#cb4-4"></a>model <span class="ot">&lt;-</span> <span class="fu">estRMT</span>(dow30data, <span class="at">parallel =</span> <span class="cn">FALSE</span>)  <span class="co"># estRMT function optimizes the covariance matrix</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Load data and apply RMT</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">load</span>(<span class="st">"dow30data.RData"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3"></a>model <span class="ot">&lt;-</span> <span class="fu">estRMT</span>(dow30data, <span class="at">parallel =</span> <span class="cn">FALSE</span>)  <span class="co"># estRMT function optimizes the covariance matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="callout callout-important callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Important</strong></p>
-</div>
-<div class="callout-content">
-<p><code>fml::estRMT()</code> is part of the R package for this course details of which can be found <a href="https://github/quinfer/fml" class="uri">https://github/quinfer/fml</a></p>
-</div>
-</div>
-</div>
+<ul>
+<li><code>fml::estRMT()</code> is part of the R package for this course details of which can be found <a href="https://github/quinfer/fml" class="uri">https://github/quinfer/fml</a></li>
+</ul>
 </section>
-<section id="portfolio-optimization-using-denoised-data" class="slide level2">
+<section id="portfolio-optimization-using-denoised-data" class="slide level2 smaller">
 <h2>Portfolio Optimization Using Denoised Data</h2>
 <ul>
-<li><ul>
-<li>Optimising a portfolio with denoised data involves adjusting constraints and objectives with the <code>PortfolioAnalytics</code> framework to reflect the refined risk and return estimates</li>
-</ul></li>
+<li>Optimising a portfolio with denoised data involves adjusting constraints and objectives with the <code>PortfolioAnalytics</code> R framework to reflect the refined risk and return estimates</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1"></a><span class="in">```{r}</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># Load the PortfolioAnalytics library, which provides tools for portfolio analysis</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="fu">library</span>(PortfolioAnalytics)</span>
-<span id="cb5-4"><a href="#cb5-4"></a></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="co"># Initialize a portfolio specification object with the assets derived from the column names of the dow30data dataset.</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="co"># This step sets up the portfolio with the specified assets, preparing it for further configuration.</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a>pspec.lo <span class="ot">&lt;-</span> <span class="fu">portfolio.spec</span>(<span class="at">assets =</span> <span class="fu">colnames</span>(dow30data))</span>
-<span id="cb5-8"><a href="#cb5-8"></a></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="co"># Add a full investment constraint to ensure that all capital is allocated across the portfolio's assets.</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="co"># This constraint mandates that the sum of the asset weights equals 100%, enforcing full investment of available capital.</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a>pspec.lo <span class="ot">&lt;-</span> <span class="fu">add.constraint</span>(pspec.lo, <span class="at">type =</span> <span class="st">"full_investment"</span>)</span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Load the PortfolioAnalytics library, which provides tools for portfolio analysis</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">library</span>(PortfolioAnalytics)</span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co"># Initialize a portfolio specification object with the assets derived from the column names of the dow30data dataset.</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>pspec.lo <span class="ot">&lt;-</span> <span class="fu">portfolio.spec</span>(<span class="at">assets =</span> <span class="fu">colnames</span>(dow30data))</span>
+<span id="cb5-6"><a href="#cb5-6"></a></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co"># Add a full investment constraint mandating that the sum of the asset weights equals 100%, enforcing full investment of available capital.</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a>pspec.lo <span class="ot">&lt;-</span> <span class="fu">add.constraint</span>(pspec.lo, <span class="at">type =</span> <span class="st">"full_investment"</span>)</span>
+<span id="cb5-9"><a href="#cb5-9"></a></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="co"># This ensures that the portfolio can only take long positions in assets, prohibiting short selling.</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a>pspec.lo <span class="ot">&lt;-</span> <span class="fu">add.constraint</span>(pspec.lo, <span class="at">type =</span> <span class="st">"long_only"</span>)</span>
 <span id="cb5-12"><a href="#cb5-12"></a></span>
-<span id="cb5-13"><a href="#cb5-13"></a><span class="co"># Add a long-only constraint to restrict portfolio positions to be non-negative.</span></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="co"># This ensures that the portfolio can only take long positions in assets, prohibiting short selling.</span></span>
-<span id="cb5-15"><a href="#cb5-15"></a>pspec.lo <span class="ot">&lt;-</span> <span class="fu">add.constraint</span>(pspec.lo, <span class="at">type =</span> <span class="st">"long_only"</span>)</span>
-<span id="cb5-16"><a href="#cb5-16"></a></span>
-<span id="cb5-17"><a href="#cb5-17"></a><span class="co"># Define the portfolio's objective to maximize the mean return.</span></span>
-<span id="cb5-18"><a href="#cb5-18"></a><span class="co"># This objective instructs the optimization algorithm to seek the highest possible expected return from the portfolio.</span></span>
-<span id="cb5-19"><a href="#cb5-19"></a>pspec.lo <span class="ot">&lt;-</span> <span class="fu">add.objective</span>(<span class="at">portfolio =</span> pspec.lo, <span class="at">type =</span> <span class="st">"return"</span>, <span class="at">name =</span> <span class="st">"mean"</span>)</span>
-<span id="cb5-20"><a href="#cb5-20"></a></span>
-<span id="cb5-21"><a href="#cb5-21"></a><span class="co"># Add another objective to minimize the portfolio's variance, targeting risk reduction.</span></span>
-<span id="cb5-22"><a href="#cb5-22"></a><span class="co"># This objective aims to construct a portfolio that achieves the lowest possible risk, as measured by the variance of portfolio returns.</span></span>
-<span id="cb5-23"><a href="#cb5-23"></a>pspec.lo <span class="ot">&lt;-</span> <span class="fu">add.objective</span>(<span class="at">portfolio =</span> pspec.lo, <span class="at">type =</span> <span class="st">"risk"</span>, <span class="at">name =</span> <span class="st">"var"</span>)</span>
-<span id="cb5-24"><a href="#cb5-24"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co"># Set up objectives for mean-variance optimization: maximize mean return and minimize portfolio variance (risk)</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a>pspec.lo <span class="ot">&lt;-</span> <span class="fu">add.objective</span>(<span class="at">portfolio =</span> pspec.lo, <span class="at">type =</span> <span class="st">"return"</span>, <span class="at">name =</span> <span class="st">"mean"</span>)</span>
+<span id="cb5-15"><a href="#cb5-15"></a>pspec.lo <span class="ot">&lt;-</span> <span class="fu">add.objective</span>(<span class="at">portfolio =</span> pspec.lo, <span class="at">type =</span> <span class="st">"risk"</span>, <span class="at">name =</span> <span class="st">"var"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="explanation" class="slide level2">
@@ -842,16 +788,14 @@ Barry Quinn
 <li>Let us first construct a custom moment function where covariance is built by denoising using Random Matrix Theory. We assume no third/fourth order effects.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a>custom.portfolio.moments <span class="ot">&lt;-</span> <span class="cf">function</span>(R, portfolio) {</span>
-<span id="cb6-3"><a href="#cb6-3"></a>  momentargs<span class="ot">&lt;-</span><span class="fu">list</span>()</span>
-<span id="cb6-4"><a href="#cb6-4"></a>  momentargs<span class="sc">$</span>mu<span class="ot">&lt;-</span><span class="fu">matrix</span>(<span class="fu">as.vector</span>(<span class="fu">apply</span>(R,<span class="dv">2</span>, <span class="st">"mean"</span>)), <span class="at">ncol =</span> <span class="dv">1</span>)</span>
-<span id="cb6-5"><a href="#cb6-5"></a>  momentargs<span class="sc">$</span>sigma<span class="ot">&lt;-</span><span class="fu">estRMT</span>(R, <span class="at">parallel=</span><span class="cn">FALSE</span>)<span class="sc">$</span>cov</span>
-<span id="cb6-6"><a href="#cb6-6"></a>   momentargs<span class="sc">$</span>m3 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow=</span><span class="fu">ncol</span>(R), <span class="at">ncol=</span><span class="fu">ncol</span>(R)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb6-7"><a href="#cb6-7"></a>  momentargs<span class="sc">$</span>m4 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow=</span><span class="fu">ncol</span>(R), <span class="at">ncol=</span><span class="fu">ncol</span>(R)<span class="sc">^</span><span class="dv">3</span>)</span>
-<span id="cb6-8"><a href="#cb6-8"></a>  <span class="fu">return</span>(momentargs)</span>
-<span id="cb6-9"><a href="#cb6-9"></a>}</span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>custom.portfolio.moments <span class="ot">&lt;-</span> <span class="cf">function</span>(R, portfolio) {</span>
+<span id="cb6-2"><a href="#cb6-2"></a>  momentargs<span class="ot">&lt;-</span><span class="fu">list</span>()</span>
+<span id="cb6-3"><a href="#cb6-3"></a>  momentargs<span class="sc">$</span>mu<span class="ot">&lt;-</span><span class="fu">matrix</span>(<span class="fu">as.vector</span>(<span class="fu">apply</span>(R,<span class="dv">2</span>, <span class="st">"mean"</span>)), <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb6-4"><a href="#cb6-4"></a>  momentargs<span class="sc">$</span>sigma<span class="ot">&lt;-</span><span class="fu">estRMT</span>(R, <span class="at">parallel=</span><span class="cn">FALSE</span>)<span class="sc">$</span>cov</span>
+<span id="cb6-5"><a href="#cb6-5"></a>   momentargs<span class="sc">$</span>m3 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow=</span><span class="fu">ncol</span>(R), <span class="at">ncol=</span><span class="fu">ncol</span>(R)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb6-6"><a href="#cb6-6"></a>  momentargs<span class="sc">$</span>m4 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow=</span><span class="fu">ncol</span>(R), <span class="at">ncol=</span><span class="fu">ncol</span>(R)<span class="sc">^</span><span class="dv">3</span>)</span>
+<span id="cb6-7"><a href="#cb6-7"></a>  <span class="fu">return</span>(momentargs)</span>
+<span id="cb6-8"><a href="#cb6-8"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="backtest-strategy" class="slide level2">
@@ -860,21 +804,19 @@ Barry Quinn
 <li>Now lets backtest our strategy using an ordinary covariance matrix and a covariance matrix build by denoising using Random Matrix theory.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>opt.ordinary <span class="ot">&lt;-</span> <span class="fu">optimize.portfolio.rebalancing</span>(</span>
-<span id="cb7-3"><a href="#cb7-3"></a>  dow30data,pspec.lo, </span>
-<span id="cb7-4"><a href="#cb7-4"></a>  <span class="at">optimize_method=</span><span class="st">"ROI"</span>,</span>
-<span id="cb7-5"><a href="#cb7-5"></a>  <span class="at">rebalance_on=</span><span class="st">'months'</span>,</span>
-<span id="cb7-6"><a href="#cb7-6"></a>  <span class="at">training_period=</span><span class="dv">30</span>,</span>
-<span id="cb7-7"><a href="#cb7-7"></a>  <span class="at">trailing_periods=</span><span class="dv">30</span>)</span>
-<span id="cb7-8"><a href="#cb7-8"></a>opt.rmt <span class="ot">&lt;-</span><span class="fu">optimize.portfolio.rebalancing</span>(</span>
-<span id="cb7-9"><a href="#cb7-9"></a>  dow30data, pspec.lo,</span>
-<span id="cb7-10"><a href="#cb7-10"></a>  <span class="at">optimize_method=</span><span class="st">"ROI"</span>,</span>
-<span id="cb7-11"><a href="#cb7-11"></a>  <span class="at">momentFUN =</span> <span class="st">"custom.portfolio.moments"</span>,</span>
-<span id="cb7-12"><a href="#cb7-12"></a>  <span class="at">rebalance_on=</span><span class="st">"months"</span>,</span>
-<span id="cb7-13"><a href="#cb7-13"></a>  <span class="at">training_period=</span><span class="dv">30</span>,</span>
-<span id="cb7-14"><a href="#cb7-14"></a>  <span class="at">trailing_periods=</span><span class="dv">30</span>)</span>
-<span id="cb7-15"><a href="#cb7-15"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>opt.ordinary <span class="ot">&lt;-</span> <span class="fu">optimize.portfolio.rebalancing</span>(</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  dow30data,pspec.lo, </span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="at">optimize_method=</span><span class="st">"ROI"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4"></a>  <span class="at">rebalance_on=</span><span class="st">'months'</span>,</span>
+<span id="cb7-5"><a href="#cb7-5"></a>  <span class="at">training_period=</span><span class="dv">30</span>,</span>
+<span id="cb7-6"><a href="#cb7-6"></a>  <span class="at">trailing_periods=</span><span class="dv">30</span>)</span>
+<span id="cb7-7"><a href="#cb7-7"></a>opt.rmt <span class="ot">&lt;-</span><span class="fu">optimize.portfolio.rebalancing</span>(</span>
+<span id="cb7-8"><a href="#cb7-8"></a>  dow30data, pspec.lo,</span>
+<span id="cb7-9"><a href="#cb7-9"></a>  <span class="at">optimize_method=</span><span class="st">"ROI"</span>,</span>
+<span id="cb7-10"><a href="#cb7-10"></a>  <span class="at">momentFUN =</span> <span class="st">"custom.portfolio.moments"</span>,</span>
+<span id="cb7-11"><a href="#cb7-11"></a>  <span class="at">rebalance_on=</span><span class="st">"months"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12"></a>  <span class="at">training_period=</span><span class="dv">30</span>,</span>
+<span id="cb7-13"><a href="#cb7-13"></a>  <span class="at">trailing_periods=</span><span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="extract-the-optimal-weight-from-backtests" class="slide level2">
@@ -883,42 +825,29 @@ Barry Quinn
 <li>We can now extract weights and build cumulative returns using the PerformanceAnalytics package.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1"></a><span class="in">```{r}</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a>ordinary.wts <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(<span class="fu">extractWeights</span>(opt.ordinary))</span>
-<span id="cb8-3"><a href="#cb8-3"></a>ordinary <span class="ot">&lt;-</span> <span class="fu">Return.rebalancing</span>(<span class="at">R=</span>dow30data, <span class="at">weights=</span>ordinary.wts)</span>
-<span id="cb8-4"><a href="#cb8-4"></a>rmt.wts <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(<span class="fu">extractWeights</span>(opt.rmt))</span>
-<span id="cb8-5"><a href="#cb8-5"></a>rmt <span class="ot">&lt;-</span> <span class="fu">Return.rebalancing</span>(<span class="at">R=</span>dow30data, <span class="at">weights=</span>rmt.wts)</span>
-<span id="cb8-6"><a href="#cb8-6"></a>rmt.strat.rets <span class="ot">&lt;-</span> <span class="fu">merge.xts</span>(ordinary,rmt)</span>
-<span id="cb8-7"><a href="#cb8-7"></a><span class="fu">colnames</span>(rmt.strat.rets) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ordinary"</span>, <span class="st">"rmt"</span>)</span>
-<span id="cb8-8"><a href="#cb8-8"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>ordinary.wts <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(<span class="fu">extractWeights</span>(opt.ordinary))</span>
+<span id="cb8-2"><a href="#cb8-2"></a>ordinary <span class="ot">&lt;-</span> <span class="fu">Return.rebalancing</span>(<span class="at">R=</span>dow30data, <span class="at">weights=</span>ordinary.wts)</span>
+<span id="cb8-3"><a href="#cb8-3"></a>rmt.wts <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(<span class="fu">extractWeights</span>(opt.rmt))</span>
+<span id="cb8-4"><a href="#cb8-4"></a>rmt <span class="ot">&lt;-</span> <span class="fu">Return.rebalancing</span>(<span class="at">R=</span>dow30data, <span class="at">weights=</span>rmt.wts)</span>
+<span id="cb8-5"><a href="#cb8-5"></a>rmt.strat.rets <span class="ot">&lt;-</span> <span class="fu">merge.xts</span>(ordinary,rmt)</span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="fu">colnames</span>(rmt.strat.rets) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ordinary"</span>, <span class="st">"rmt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="the-value-of-noise-filtering-in-financial-decision-making" class="slide level2">
-<h2>The Value of Noise Filtering in Financial Decision-Making</h2>
-<div class="columns">
-<div class="column">
-<ul>
-<li>The success of RMT in filtering out noise underscores the importance of sophisticated data analysis techniques in modern finance.</li>
-<li>By enabling a clearer understanding of underlying market dynamics, RMT facilitates more informed and strategic decision-making processes.</li>
-</ul>
-</div><div class="column">
+<section id="benefits-of-denoising-in-trading-strategies" class="slide level2">
+<h2>Benefits of denoising in trading strategies</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="fu">charts.PerformanceSummary</span>(rmt.strat.rets, <span class="at">wealth.index =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb9-3"><a href="#cb9-3"></a>                          <span class="at">colorset =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"darkgrey"</span>), </span>
-<span id="cb9-4"><a href="#cb9-4"></a>                          <span class="at">main =</span> <span class="st">"Advantages of Denoising in Portfolio Management"</span>, </span>
-<span id="cb9-5"><a href="#cb9-5"></a>                          <span class="at">legend.loc =</span> <span class="st">"topleft"</span>)</span>
-<span id="cb9-6"><a href="#cb9-6"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-9-1.png" width="960"></p>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">charts.PerformanceSummary</span>(rmt.strat.rets, </span>
+<span id="cb9-2"><a href="#cb9-2"></a>                          <span class="at">colorset =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"darkgrey"</span>), </span>
+<span id="cb9-3"><a href="#cb9-3"></a>                          <span class="at">main =</span> <span class="st">"Advantages of Denoising in Portfolio Management"</span>, </span>
+<span id="cb9-4"><a href="#cb9-4"></a>                          <span class="at">legend.loc =</span> <span class="st">"topleft"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
-</div>
-</div>
-</div>
-</section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"></section>
 <section id="enhancing-portfolio-performance-with-denoising" class="slide level2">
 <h2>Enhancing Portfolio Performance with Denoising</h2>
 <ul>
+<li>The success of RMT in filtering out noise underscores the importance of sophisticated data analysis techniques in modern finance.</li>
+<li>By enabling a clearer understanding of underlying market dynamics, RMT facilitates more informed and strategic decision-making processes.</li>
 <li>Implementing denoising techniques, particularly Random Matrix Theory (RMT), markedly improves portfolio performance.</li>
 <li>This method effectively separates genuine market signals from noise, leading to more accurate risk assessments and investment strategies.</li>
 </ul>
