@@ -476,7 +476,6 @@ chart.RiskReturnScatter(rmt.strat.rets)
 - The empirical results highlight not just improved returns but also a significant decrease in investment risk.
 
 
-Certainly! Here's a concise summary suitable for a closing slide on denoising financial data, highlighting the key points related to the Marcenko-Pastur law and its applications in AI and trading:
 
 ## Wrapping Up
 #### Denoising Financial Data: Insights from the Marcenko-Pastur Law
